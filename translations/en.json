@@ -1,0 +1,79 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SIRI Next Departures - Initial Setup",
+        "description": "Please enter the connection details for your SIRI API and the link to the NETEX file.",
+        "data": {
+          "netex_url": "NETEX File URL",
+          "siri_endpoint": "SIRI API Endpoint",
+          "dataset_id": "Dataset ID (or API Key)"
+        }
+      }
+    },
+    "error": {
+      "single_instance_allowed": "Only one instance of this integration is allowed.",
+      "cannot_connect": "Unable to connect to the SIRI API or download the NETEX file. Please check the information.",
+      "invalid_auth": "Invalid authentication with the SIRI API.",
+      "unknown": "Unknown error."
+    },
+    "abort": {
+        "single_instance_allowed": "Already configured. Only one configuration is possible."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure SIRI Next Departures Sensors",
+        "menu_options": {
+          "search_stop": "Add a new stop sensor (Search)",
+          "remove_sensor": "Remove an existing stop sensor"
+        }
+      },
+      "search_stop": {
+        "title": "Add Sensor - Search for a Stop",
+        "description": "Enter a term to search for a stop among the {stop_count} loaded stops.",
+        "data": {
+          "search_term": "Search term (stop name or ID)"
+        }
+      },
+      "select_stop": {
+        "title": "Add Sensor - Select Stop",
+        "description": "Select the desired stop from the results for \"{search_term}\".",
+        "data": {
+          "stop_id": "Stop"
+        }
+      },
+      "sensor_options": {
+        "title": "Add Sensor - Options",
+        "description": "Configure options for the stop sensor: {stop_id}",
+        "data": {
+          "stop_name": "Sensor Name (optional)",
+          "max_departures": "Maximum number of departures to display"
+        }
+      },
+      "remove_sensor": {
+        "title": "Remove Stop Sensor",
+        "description": "Select the stop sensor to remove. This action is irreversible.",
+        "data": {
+            "sensor_to_remove": "Sensor to remove"
+        }
+      }
+    },
+    "error": {
+      "cannot_load_stops_for_search": "Unable to load the list of stops for search. Check initial configuration and logs.",
+      "cannot_load_stops": "Unable to load the list of stops. Check initial configuration and logs.",
+      "no_stops_found": "No stops found matching your search.",
+      "already_configured_stop": "A sensor for this stop is already configured.",
+      "not_implemented": "This feature is not yet implemented.",
+      "no_sensors_to_remove": "No sensors are currently configured to be removed.",
+      "save_options_failed": "Failed to save options. Please try again.",
+      "sensor_not_found_for_removal": "The selected sensor was not found for removal."
+    },
+    "abort": {
+      "cannot_load_stops_for_search": "Error loading stops. Cannot continue.",
+      "cannot_load_stops": "Error loading stops. Cannot continue.",
+      "not_implemented": "Feature not implemented."
+    }
+  }
+} 

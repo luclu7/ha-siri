@@ -1,0 +1,77 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SIRI Next Departures - Configuration Initiale",
+        "description": "Veuillez entrer les informations de connexion à votre API SIRI et le lien vers le fichier NETEX.",
+        "data": {
+          "netex_url": "URL du fichier NETEX",
+          "siri_endpoint": "Endpoint de l'API SIRI",
+          "dataset_id": "Dataset ID (ou clé API)"
+        }
+      }
+    },
+    "error": {
+      "single_instance_allowed": "Une seule instance de cette intégration est autorisée.",
+      "cannot_connect": "Impossible de se connecter à l'API SIRI ou de télécharger le fichier NETEX. Vérifiez les informations.",
+      "invalid_auth": "Authentification invalide avec l'API SIRI.",
+      "unknown": "Erreur inconnue."
+    },
+    "abort": {
+        "single_instance_allowed": "Déjà configuré. Une seule configuration est possible."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configurer les capteurs SIRI Next Departures",
+        "menu_options": {
+          "search_stop": "Ajouter un nouveau capteur d'arrêt (Rechercher)",
+          "remove_sensor": "Supprimer un capteur d'arrêt existant"
+        }
+      },
+      "search_stop": {
+        "title": "Ajouter un capteur - Rechercher un arrêt",
+        "description": "Entrez un terme pour rechercher un arrêt parmi les {stop_count} arrêts chargés.",
+        "data": {
+          "search_term": "Terme de recherche (nom ou ID de l'arrêt)"
+        }
+      },
+      "select_stop": {
+        "title": "Ajouter un capteur - Sélectionner l'arrêt",
+        "description": "Sélectionnez l'arrêt désiré parmi les résultats pour \"{search_term}\".",
+        "data": {
+          "stop_id": "Arrêt"
+        }
+      },
+      "sensor_options": {
+        "title": "Ajouter un capteur - Options",
+        "description": "Configurez les options pour le capteur de l'arrêt : {stop_id}",
+        "data": {
+          "stop_name": "Nom du capteur (optionnel)",
+          "max_departures": "Nombre maximum de départs à afficher"
+        }
+      },
+      "remove_sensor": {
+        "title": "Supprimer un capteur d'arrêt",
+        "description": "Sélectionnez le capteur d'arrêt à supprimer. Cette action est irréversible.",
+        "data": {
+            "sensor_to_remove": "Capteur à supprimer"
+        }
+      }
+    },
+    "error": {
+      "cannot_load_stops_for_search": "Impossible de charger la liste des arrêts pour la recherche. Vérifiez la configuration initiale et les journaux.",
+      "cannot_load_stops": "Impossible de charger la liste des arrêts. Vérifiez la configuration initiale et les journaux.",
+      "no_stops_found": "Aucun arrêt trouvé correspondant à votre recherche.",
+      "already_configured_stop": "Un capteur pour cet arrêt est déjà configuré.",
+      "not_implemented": "Cette fonctionnalité n'est pas encore implémentée.",
+      "no_sensors_to_remove": "Aucun capteur n'est actuellement configuré pour être supprimé."
+    },
+    "abort": {
+      "cannot_load_stops_for_search": "Erreur lors du chargement des arrêts. Impossible de continuer.",
+      "cannot_load_stops": "Erreur lors du chargement des arrêts. Impossible de continuer.",
+      "not_implemented": "Fonctionnalité non implémentée."
+    }
+  }
+} 
