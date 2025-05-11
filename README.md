@@ -36,7 +36,7 @@ Cette intégration Home Assistant personnalisée permet de récupérer et d'affi
     ```
 
 2.  **Dépendances Python** :
-    L'intégration nécessite les bibliothèques Python suivantes : `httpx`, `xmltodict`, et `diacritics`. Celles-ci sont listées dans `manifest.json` et devraient être installées automatiquement par Home Assistant au démarrage après l'ajout de l'intégration. Si ce n'est pas le cas, vous pourriez avoir besoin de les installer manuellement dans l'environnement Python de Home Assistant.
+    L'intégration nécessite les bibliothèques Python suivantes : `httpx`, `xmltodict`, et `unidecode`. Celles-ci sont listées dans `manifest.json` et devraient être installées automatiquement par Home Assistant au démarrage après l'ajout de l'intégration. Si ce n'est pas le cas, vous pourriez avoir besoin de les installer manuellement dans l'environnement Python de Home Assistant.
 
 3.  **Redémarrer Home Assistant** :
     Redémarrez votre instance Home Assistant pour qu'il puisse détecter et charger la nouvelle intégration.
