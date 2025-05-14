@@ -9,6 +9,7 @@ Cette intégration Home Assistant personnalisée permet de récupérer et d'affi
 - Interrogation d'un endpoint SIRI pour les prochains départs à un arrêt spécifique.
 - Création d'entités capteur dans Home Assistant pour chaque arrêt surveillé.
 - Chaque capteur affiche l'heure du prochain départ comme état et les départs suivants comme attributs.
+- Carte Lovelace personnalisée pour afficher les prochains départs avec des icônes adaptées au mode de transport.
 
 ## Prérequis
 
@@ -35,10 +36,25 @@ Cette intégration Home Assistant personnalisée permet de récupérer et d'affi
     <config_directory>/custom_components/siri_next_departures/utils.py
     ```
 
-2.  **Dépendances Python** :
+2.  **Installer la carte Lovelace personnalisée (optionnel)** :
+
+    - Copiez le fichier `www/siri-next-departure-card.js` dans le dossier `www` de votre configuration Home Assistant.
+    - Si le dossier `www` n'existe pas, créez-le.
+    - Ajoutez la ressource à votre configuration Lovelace:
+      - Via l'interface utilisateur: **Paramètres** > **Tableau de bord** > Cliquez sur le menu (**⋮**) > **Éditer le tableau de bord** > **Ressources** > **Ajouter une ressource**
+        - URL: `/local/siri-next-departure-card.js`
+        - Type: `JavaScript Module`
+      - Ou ajoutez manuellement dans votre configuration YAML:
+        ```yaml
+        resources:
+          - url: /local/siri-next-departure-card.js
+            type: module
+        ```
+
+3.  **Dépendances Python** :
     L'intégration nécessite les bibliothèques Python suivantes : `httpx`, `xmltodict`, et `unidecode`. Celles-ci sont listées dans `manifest.json` et devraient être installées automatiquement par Home Assistant au démarrage après l'ajout de l'intégration. Si ce n'est pas le cas, vous pourriez avoir besoin de les installer manuellement dans l'environnement Python de Home Assistant.
 
-3.  **Redémarrer Home Assistant** :
+4.  **Redémarrer Home Assistant** :
     Redémarrez votre instance Home Assistant pour qu'il puisse détecter et charger la nouvelle intégration.
 
 ## Configuration
@@ -82,3 +98,33 @@ Un nouveau capteur sera créé dans Home Assistant, affichant les prochains dép
     - `expected_time`: Heure de départ prévue (peut inclure le retard).
     - `aimed_time`: Heure de départ théorique.
     - `vehicle_at_stop`: (Optionnel) Booléen indiquant si le véhicule est à l'arrêt.
+
+## Utilisation de la Carte Lovelace Personnalisée
+
+Une carte Lovelace personnalisée est disponible pour afficher les prochains départs de manière plus visuelle et intuitive.
+
+### Ajout de la Carte au Tableau de Bord
+
+1. Modifiez votre tableau de bord Lovelace
+2. Cliquez sur **+ Ajouter une carte**
+3. Recherchez **Carte des prochains départs SIRI**
+4. Configurez la carte:
+   - **Entité**: Sélectionnez un capteur SIRI Next Departures (ex: `sensor.next_departures_arret_mairie`)
+   - **Nombre max de départs**: Définissez le nombre maximum de départs à afficher (par défaut: 5)
+
+### Configuration YAML Manuelle
+
+```yaml
+type: 'custom:siri-next-departure-card'
+entity: sensor.next_departures_arret_mairie
+max_departures: 5
+```
+
+### Fonctionnalités de la Carte
+
+- Affichage des prochains départs avec heure et temps d'attente
+- Icônes adaptées au mode de transport (bus, tram, train, métro, ferry)
+- Mise en page responsive et intuitive
+- Personnalisation du nombre de départs affichés
+
+Pour plus de détails sur la carte personnalisée, consultez le fichier `www/README.md`.

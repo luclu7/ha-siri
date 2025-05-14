@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="360" height="280" viewBox="0 0 360 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Card Background -->
+  <rect width="360" height="280" rx="12" fill="#FFFFFF" stroke="#DDDDDD" stroke-width="1"/>
+  
+  <!-- Card Header -->
+  <rect width="360" height="48" rx="12 12 0 0" fill="#F7F7F7"/>
+  <text x="16" y="30" font-family="Roboto, sans-serif" font-size="16" font-weight="500" fill="#212121">Arrêt Mairie</text>
+  
+  <!-- Departure Item 1 -->
+  <g transform="translate(0, 48)">
+    <rect width="360" height="46" fill="#FFFFFF"/>
+    <!-- Bus Icon -->
+    <path d="M16,32C16,34.21 17.79,36 20,36C22.21,36 24,34.21 24,32L24,28L16,28L16,32ZM36,32C36,34.21 37.79,36 40,36C42.21,36 44,34.21 44,32L44,28L36,28L36,32ZM44,16L44,8C44,4.14 39.8,1 30,1C20.2,1 16,4.14 16,8L16,16C16,18.35 16,22 16,22L44,22C44,22 44,18.35 44,16ZM32,5C34.21,5 36,6.79 36,9C36,11.21 34.21,13 32,13C29.79,13 28,11.21 28,9C28,6.79 29.79,5 32,5ZM40,15L20,15L20,12L40,12L40,15Z" transform="translate(16, 8)" fill="#303F9F"/>
+    
+    <!-- Time -->
+    <text x="48" y="30" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#212121">14:30</text>
+    
+    <!-- Line Number -->
+    <rect x="110" y="14" width="36" height="24" rx="4" fill="#303F9F"/>
+    <text x="128" y="30" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">5</text>
+    
+    <!-- Destination -->
+    <text x="158" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#212121">Gare Centrale</text>
+    
+    <!-- ETA -->
+    <text x="340" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#757575" text-anchor="end">3 min</text>
+  </g>
+
+  <!-- Departure Item 2 -->
+  <g transform="translate(0, 94)">
+    <rect width="360" height="46" fill="#FAFAFA"/>
+    <!-- Tram Icon -->
+    <path d="M36,0C27.67,0 16,2.04 16,10L16,26.96L16,32C16,34.22 17.78,36 20,36C21.26,36 22.4,35.4 23.17,34.5C23.91,35.38 25.03,36 26.34,36C27.64,36 28.76,35.39 29.5,34.5C30.24,35.39 31.36,36 32.66,36C33.97,36 35.09,35.38 35.83,34.5C36.6,35.4 37.73,36 39,36C41.22,36 43,34.22 43,32L43,26.96L43,10C43,2.04 31.33,0 23,0ZM25,2L34,2L34,4L25,4ZM20,6L39,6C41.76,6 43,7.27 43,10L43,18L16,18L16,10C16,7.27 17.24,6 20,6ZM19,22.5C20.38,22.5 21.5,23.62 21.5,25C21.5,26.38 20.38,27.5 19,27.5C17.62,27.5 16.5,26.38 16.5,25C16.5,23.62 17.62,22.5 19,22.5ZM40,22.5C41.38,22.5 42.5,23.62 42.5,25C42.5,26.38 41.38,27.5 40,27.5C38.62,27.5 37.5,26.38 37.5,25C37.5,23.62 38.62,22.5 40,22.5Z" transform="translate(16, 8)" fill="#00796B"/>
+    
+    <!-- Time -->
+    <text x="48" y="30" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#212121">14:35</text>
+    
+    <!-- Line Number -->
+    <rect x="110" y="14" width="36" height="24" rx="4" fill="#00796B"/>
+    <text x="128" y="30" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">T2</text>
+    
+    <!-- Destination -->
+    <text x="158" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#212121">Centre Commercial</text>
+    
+    <!-- ETA -->
+    <text x="340" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#757575" text-anchor="end">8 min</text>
+  </g>
+
+  <!-- Departure Item 3 -->
+  <g transform="translate(0, 140)">
+    <rect width="360" height="46" fill="#FFFFFF"/>
+    <!-- Bus Icon -->
+    <path d="M16,32C16,34.21 17.79,36 20,36C22.21,36 24,34.21 24,32L24,28L16,28L16,32ZM36,32C36,34.21 37.79,36 40,36C42.21,36 44,34.21 44,32L44,28L36,28L36,32ZM44,16L44,8C44,4.14 39.8,1 30,1C20.2,1 16,4.14 16,8L16,16C16,18.35 16,22 16,22L44,22C44,22 44,18.35 44,16ZM32,5C34.21,5 36,6.79 36,9C36,11.21 34.21,13 32,13C29.79,13 28,11.21 28,9C28,6.79 29.79,5 32,5ZM40,15L20,15L20,12L40,12L40,15Z" transform="translate(16, 8)" fill="#E64A19"/>
+    
+    <!-- Time -->
+    <text x="48" y="30" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#212121">14:40</text>
+    
+    <!-- Line Number -->
+    <rect x="110" y="14" width="36" height="24" rx="4" fill="#E64A19"/>
+    <text x="128" y="30" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">18</text>
+    
+    <!-- Destination -->
+    <text x="158" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#212121">Université</text>
+    
+    <!-- ETA -->
+    <text x="340" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#757575" text-anchor="end">13 min</text>
+  </g>
+
+  <!-- Departure Item 4 -->
+  <g transform="translate(0, 186)">
+    <rect width="360" height="46" fill="#FAFAFA"/>
+    <!-- Metro Icon -->
+    <path d="M35.2,0L7.65,0C3.4,0 0,3.4 0,7.65L0,37.4C0,41.65 3.4,45.05 7.65,45.05L35.2,45.05C39.45,45.05 42.85,41.65 42.85,37.4L42.85,7.65C42.85,3.4 39.45,0 35.2,0ZM9.75,34.2C7.3,34.2 5.3,32.2 5.3,29.75C5.3,27.3 7.3,25.3 9.75,25.3C12.2,25.3 14.2,27.3 14.2,29.75C14.2,32.2 12.2,34.2 9.75,34.2ZM22.8,18.65L5.95,18.65L5.95,7.65L22.8,7.65L22.8,18.65ZM33.1,34.2C30.65,34.2 28.65,32.2 28.65,29.75C28.65,27.3 30.65,25.3 33.1,25.3C35.55,25.3 37.55,27.3 37.55,29.75C37.55,32.2 35.55,34.2 33.1,34.2ZM36.9,18.65L20.05,18.65L20.05,7.65L36.9,7.65L36.9,18.65Z" transform="translate(16, 8) scale(0.5)" fill="#512DA8"/>
+    
+    <!-- Time -->
+    <text x="48" y="30" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#212121">14:50</text>
+    
+    <!-- Line Number -->
+    <rect x="110" y="14" width="36" height="24" rx="4" fill="#512DA8"/>
+    <text x="128" y="30" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">M1</text>
+    
+    <!-- Destination -->
+    <text x="158" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#212121">Aéroport</text>
+    
+    <!-- ETA -->
+    <text x="340" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#757575" text-anchor="end">23 min</text>
+  </g>
+
+  <!-- Departure Item 5 -->
+  <g transform="translate(0, 232)">
+    <rect width="360" height="46" fill="#FFFFFF"/>
+    <!-- Train Icon -->
+    <path d="M31.0002 14.7695C31.0002 16.6095 29.5102 18.0995 27.6702 18.0995C25.8302 18.0995 24.3402 16.6095 24.3402 14.7695C24.3402 12.9295 25.8302 11.4395 27.6702 11.4395C29.5102 11.4395 31.0002 12.9295 31.0002 14.7695ZM11.3302 14.7695C11.3302 12.9295 12.8202 11.4395 14.6602 11.4395C16.5002 11.4395 17.9902 12.9295 17.9902 14.7695C17.9902 16.6095 16.5002 18.0995 14.6602 18.0995C12.8202 18.0995 11.3302 16.6095 11.3302 14.7695ZM42.3302 7.6195V13.1895H36.6702V7.6195H5.6702V13.1895H0.000244141V7.6195H0.000244141C0.000244141 3.7295 0.000244141 0.119514 6.90024 0.119514H35.4402C42.3402 0.119514 42.3402 3.7295 42.3402 7.6195L42.3302 7.6195ZM33.3302 14.7695C33.3302 11.6395 30.7902 9.0995 27.6602 9.0995C24.5302 9.0995 21.9902 11.6395 21.9902 14.7695C21.9902 17.8995 24.5302 20.4395 27.6602 20.4395C30.7902 20.4395 33.3302 17.8995 33.3302 14.7695ZM20.3302 14.7695C20.3302 11.6395 17.7902 9.0995 14.6602 9.0995C11.5302 9.0995 8.9902 11.6395 8.9902 14.7695C8.9902 17.8995 11.5302 20.4395 14.6602 20.4395C17.7902 20.4395 20.3302 17.8995 20.3302 14.7695ZM33.3302 36.1195H9.0002V21.1195H33.3302V36.1195ZM35.6702 20.4395H6.6702C3.0102 20.4395 0.000244141 23.4495 0.000244141 27.1095V40.7695H5.6702V38.4295H37.0002V40.7695H42.6602V27.1095C42.6602 23.4495 39.6602 20.4395 36.0002 20.4395H35.6802L35.6702 20.4395Z" transform="translate(16, 8) scale(0.5)" fill="#0288D1"/>
+    
+    <!-- Time -->
+    <text x="48" y="30" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#212121">15:05</text>
+    
+    <!-- Line Number -->
+    <rect x="110" y="14" width="36" height="24" rx="4" fill="#0288D1"/>
+    <text x="128" y="30" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">TER</text>
+    
+    <!-- Destination -->
+    <text x="158" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#212121">Ville Voisine</text>
+    
+    <!-- ETA -->
+    <text x="340" y="30" font-family="Roboto, sans-serif" font-size="14" fill="#757575" text-anchor="end">38 min</text>
+  </g>
+</svg> 
