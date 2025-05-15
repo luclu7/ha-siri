@@ -7,7 +7,8 @@
         "data": {
           "netex_url": "URL du fichier NETEX",
           "siri_endpoint": "Endpoint de l'API SIRI",
-          "dataset_id": "Dataset ID (ou clé API)"
+          "dataset_id": "Dataset ID (ou clé API)",
+          "lines_repository_url": "URL du référentiel des lignes (optionnel)"
         }
       }
     },
@@ -27,7 +28,8 @@
         "title": "Configurer les capteurs SIRI Next Departures",
         "menu_options": {
           "search_stop": "Ajouter un nouveau capteur d'arrêt (Rechercher)",
-          "remove_sensor": "Supprimer un capteur d'arrêt existant"
+          "remove_sensor": "Supprimer un capteur d'arrêt existant",
+          "update_lines_repository": "Configurer le référentiel des lignes"
         }
       },
       "search_stop": {
@@ -58,6 +60,13 @@
         "data": {
             "sensor_to_remove": "Capteur à supprimer"
         }
+      },
+      "update_lines_repository": {
+        "title": "Référentiel des lignes",
+        "description": "Configurez l'URL du référentiel des lignes pour enrichir les données des départs avec les informations des lignes (couleurs, codes publics, etc.). URL actuelle : {current_url}",
+        "data": {
+            "lines_repository_url": "URL du référentiel des lignes"
+        }
       }
     },
     "error": {
@@ -66,7 +75,10 @@
       "no_stops_found": "Aucun arrêt trouvé correspondant à votre recherche.",
       "already_configured_stop": "Un capteur pour cet arrêt est déjà configuré.",
       "not_implemented": "Cette fonctionnalité n'est pas encore implémentée.",
-      "no_sensors_to_remove": "Aucun capteur n'est actuellement configuré pour être supprimé."
+      "no_sensors_to_remove": "Aucun capteur n'est actuellement configuré pour être supprimé.",
+      "save_options_failed": "Échec de l'enregistrement des options. Veuillez réessayer.",
+      "sensor_not_found_for_removal": "Le capteur sélectionné n'a pas été trouvé pour la suppression.",
+      "lines_repository_error": "Erreur lors du chargement du référentiel des lignes. Vérifiez l'URL et le format du fichier."
     },
     "abort": {
       "cannot_load_stops_for_search": "Erreur lors du chargement des arrêts. Impossible de continuer.",

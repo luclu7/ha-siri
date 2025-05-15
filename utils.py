@@ -17,6 +17,13 @@ SIRI_NAMESPACE = "http://www.siri.org.uk/siri"
 # For now, using Dict[str, Any] for simplicity in the function signature.
 Stop = Dict[str, Any]  # Replace with TypedDict if strict typing is preferred later
 
+# Structure for storing line information from the repository
+Line = Dict[str, Any]
+
+# Cache global pour le référentiel des lignes
+_lines_repository: Dict[str, Line] = {}
+_lines_repository_url: Optional[str] = None
+
 
 def normalizeString(input_str: str) -> str:
     """Normalize a string by removing diacritics, converting to lowercase, and removing spaces/hyphens."""
@@ -163,6 +170,179 @@ async def load_stops_from_url(hass, netex_url: str) -> List[Stop]:
         return []
 
 
+async def load_lines_repository(hass, url: str) -> Dict[str, Line]:
+    """Charge le référentiel des lignes à partir d'un fichier XML."""
+    global _lines_repository, _lines_repository_url
+    
+    # Si le référentiel est déjà chargé avec cette URL, le renvoyer directement
+    if url == _lines_repository_url and _lines_repository:
+        _LOGGER.debug(f"Using cached lines repository ({len(_lines_repository)} lines)")
+        return _lines_repository
+    
+    _LOGGER.info(f"Loading lines repository from URL: {url}")
+    try:
+        # Utiliser le client httpx fourni par Home Assistant
+        client = get_async_client(hass)
+        response = await client.get(url)
+        response.raise_for_status()  # Lève une exception en cas d'erreur HTTP
+
+        xml_data = response.text
+        # Analyser le XML avec xmltodict
+        data = xmltodict.parse(
+            xml_data,
+            process_namespaces=True,
+            namespaces={},
+            force_list=(
+                f"{NETEX_NAMESPACE}:Line",
+                f"{NETEX_NAMESPACE}:KeyValue",
+            ),
+        )
+
+        lines: Dict[str, Line] = {}
+
+        # Accéder aux éléments Line dans le XML
+        try:
+            publication_delivery = data.get(f"{NETEX_NAMESPACE}:PublicationDelivery")
+            if not publication_delivery:
+                _LOGGER.error(f"'{NETEX_NAMESPACE}:PublicationDelivery' not found in lines repository XML.")
+                return {}
+
+            data_objects = publication_delivery.get(f"{NETEX_NAMESPACE}:dataObjects")
+            if not data_objects:
+                _LOGGER.error(f"'{NETEX_NAMESPACE}:dataObjects' not found in lines repository XML.")
+                return {}
+
+            general_frame = data_objects.get(f"{NETEX_NAMESPACE}:GeneralFrame")
+            if not general_frame:
+                _LOGGER.error(f"'{NETEX_NAMESPACE}:GeneralFrame' not found in lines repository XML.")
+                return {}
+
+            members = general_frame.get(f"{NETEX_NAMESPACE}:members")
+            if not members:
+                _LOGGER.error(f"'{NETEX_NAMESPACE}:members' not found in lines repository XML.")
+                return {}
+
+            # Récupérer toutes les lignes
+            line_elements = members.get(f"{NETEX_NAMESPACE}:Line", [])
+            _LOGGER.info(f"Found {len(line_elements)} lines in repository.")
+
+            for line in line_elements:
+                line_id = line.get("@id")
+                if not line_id:
+                    continue
+                
+                # Extraire l'identifiant court (après le dernier ":")
+                short_id = line_id.split(":")[-1].replace(":LOC", "")
+                
+                # Extraire les informations de la ligne
+                public_code = None
+                public_code_element = line.get(f"{NETEX_NAMESPACE}:PublicCode")
+                if public_code_element:
+                    public_code = public_code_element
+                
+                transport_mode = None
+                transport_mode_element = line.get(f"{NETEX_NAMESPACE}:TransportMode")
+                if transport_mode_element:
+                    transport_mode = transport_mode_element.lower()
+                
+                # Extraire les couleurs si présentes
+                presentation = line.get(f"{NETEX_NAMESPACE}:Presentation")
+                color = None
+                text_color = None
+                
+                if presentation:
+                    color_element = presentation.get(f"{NETEX_NAMESPACE}:Colour")
+                    if color_element:
+                        color = f"#{color_element}"
+                    
+                    text_color_element = presentation.get(f"{NETEX_NAMESPACE}:TextColour")
+                    if text_color_element:
+                        text_color = f"#{text_color_element}"
+                
+                # Créer l'objet de ligne
+                line_info: Line = {
+                    "id": short_id,
+                    "full_id": line_id,
+                    "public_code": public_code,
+                    "transport_mode": transport_mode,
+                    "color": color,
+                    "text_color": text_color
+                }
+                
+                lines[short_id] = line_info
+                
+                # Créer aussi une entrée avec l'ID complet pour la correspondance directe
+                lines[line_id] = line_info
+
+        except Exception as e:
+            _LOGGER.error(f"Error parsing lines repository structure: {e}", exc_info=True)
+            return {}
+
+        _LOGGER.info(f"Successfully loaded {len(lines)} lines.")
+        
+        # Mettre à jour le cache global
+        _lines_repository = lines
+        _lines_repository_url = url
+        
+        return lines
+
+    except httpx.HTTPStatusError as e:
+        _LOGGER.error(f"HTTP error while fetching lines repository: {e}")
+        return {}
+    except xmltodict.expat.ExpatError as e:
+        _LOGGER.error(f"Error parsing lines repository XML: {e}")
+        return {}
+    except Exception as e:
+        _LOGGER.error(f"Unexpected error loading lines repository: {e}", exc_info=True)
+        return {}
+
+
+def get_line_info(line_ref: str) -> Optional[Line]:
+    """Récupère les informations d'une ligne à partir de son identifiant."""
+    global _lines_repository
+    
+    if not _lines_repository:
+        return None
+    
+    # Essayer d'abord avec l'ID complet
+    if line_ref in _lines_repository:
+        return _lines_repository[line_ref]
+    
+    # Si non trouvé, essayer avec l'ID court (après le dernier ":")
+    short_id = line_ref.split(":")[-1].replace(":LOC", "")
+    if short_id in _lines_repository:
+        return _lines_repository[short_id]
+    
+    return None
+
+
+def enrich_departure_with_line_info(departure: Dict[str, Any]) -> Dict[str, Any]:
+    """Enrichit les données de départ avec les informations de ligne."""
+    if not departure or not _lines_repository:
+        return departure
+    
+    # Copier le départ pour ne pas modifier l'original
+    enriched = dict(departure)
+    
+    # Récupérer l'identifiant de la ligne
+    line_ref = departure.get("line_ref")
+    if not line_ref:
+        return enriched
+    
+    # Obtenir les informations de la ligne
+    line_info = get_line_info(line_ref)
+    if not line_info:
+        return enriched
+    
+    # Ajouter les informations de la ligne au départ
+    enriched["line_public_code"] = line_info.get("public_code")
+    enriched["line_transport_mode"] = line_info.get("transport_mode")
+    enriched["line_color"] = line_info.get("color")
+    enriched["line_text_color"] = line_info.get("text_color")
+    
+    return enriched
+
+
 # Define a type for individual departure for clarity
 Departure = Dict[str, Any]
 
@@ -194,6 +374,7 @@ async def get_departures_for_stops(
     dataset_id: str,
     stop_ids: List[str],
     limit_per_stop: int = 5,
+    lines_repository_url: Optional[str] = None,
 ) -> Optional[Dict[str, List[Departure]]]:
     """Fetch next departures from SIRI endpoint for a list of stop_ids."""
     if not stop_ids:
@@ -211,6 +392,11 @@ async def get_departures_for_stops(
 
     _LOGGER.debug(f"XML REQUEST: {xml_request}")
 
+    # Charger le référentiel des lignes si une URL est fournie
+    lines_repository = {}
+    if lines_repository_url:
+        lines_repository = await load_lines_repository(hass, lines_repository_url)
+
     try:
         client = get_async_client(hass)
         response = await client.post(siri_endpoint, data=xml_request, headers=headers)
@@ -218,6 +404,8 @@ async def get_departures_for_stops(
             f"SIRI API response status: {response.status_code} for {len(stop_ids)} stops."
         )
         response.raise_for_status()
+
+        _LOGGER.debug(f"SIRI API response: {response.text}")
 
         parsed_xml = xmltodict.parse(
             response.text,
@@ -359,6 +547,16 @@ async def get_departures_for_stops(
                 "vehicle_mode": vehicle_mode,
                 "vehicle_at_stop": vehicle_at_stop,
             }
+            
+            # Enrichir avec les informations du référentiel des lignes
+            if lines_repository and line_ref:
+                line_info = get_line_info(line_ref)
+                if line_info:
+                    departure_data["line_public_code"] = line_info.get("public_code")
+                    departure_data["line_transport_mode"] = line_info.get("transport_mode")
+                    departure_data["line_color"] = line_info.get("color")
+                    departure_data["line_text_color"] = line_info.get("text_color")
+            
             all_departures[current_stop_id].append(departure_data)
 
         _LOGGER.debug(

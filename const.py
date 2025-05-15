@@ -11,6 +11,7 @@ CONF_STOP_ID = "stop_id"
 CONF_STOP_NAME = "stop_name"
 CONF_SEARCH_TERM = "search_term"
 CONF_MAX_DEPARTURES = "max_departures"
+CONF_LINES_REPOSITORY_URL = "lines_repository_url"
 
 # Default values
 DEFAULT_NAME = "SIRI Next Departures"

@@ -116,34 +116,39 @@ class SiriNextDepartureCard extends HTMLElement {
 
       // Déterminer l'icône en fonction du mode de transport
       let icon = "mdi:bus";
-      const vehicleMode = (departure.vehicle_mode || "").toLowerCase();
-      if (vehicleMode.includes("tram")) {
+      // Utiliser d'abord le mode de transport du référentiel des lignes s'il est disponible
+      const transportMode = (departure.line_transport_mode || departure.vehicle_mode || "").toLowerCase();
+      if (transportMode.includes("tram")) {
         icon = "mdi:tram";
       } else if (
-        vehicleMode.includes("rail") ||
-        vehicleMode.includes("train")
+        transportMode.includes("rail") ||
+        transportMode.includes("train")
       ) {
         icon = "mdi:train";
       } else if (
-        vehicleMode.includes("metro") ||
-        vehicleMode.includes("subway")
+        transportMode.includes("metro") ||
+        transportMode.includes("subway")
       ) {
         icon = "mdi:subway";
       } else if (
-        vehicleMode.includes("ferry") ||
-        vehicleMode.includes("boat")
+        transportMode.includes("ferry") ||
+        transportMode.includes("boat")
       ) {
         icon = "mdi:ferry";
       }
-
+      
       // Créer le contenu HTML pour l'élément de départ
       departureItem.innerHTML = `
         <div class="icon-container">
           <ha-icon icon="${icon}"></ha-icon>
         </div>
         <div class="departure-time">${formattedTime}</div>
-        <div class="departure-line">${
-          departure.published_line_name || departure.line_ref || "-"
+        <div class="departure-line" style="${
+          departure.line_color ? `background-color: ${departure.line_color};` : ''
+        }${
+          departure.line_text_color ? `color: ${departure.line_text_color};` : ''
+        }">${
+          departure.line_public_code || departure.published_line_name || departure.line_ref || "-"
         }</div>
         <div class="departure-destination">${
           departure.destination_name || "Inconnu"

@@ -17,10 +17,11 @@ from .const import (
     CONF_SIRI_ENDPOINT,
     CONF_DATASET_ID,
     CONF_STOP_ID,
+    CONF_LINES_REPOSITORY_URL,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_MAX_DEPARTURES,
 )
-from .utils import load_stops_from_url, get_departures_for_stops  # Renamed function
+from .utils import load_stops_from_url, get_departures_for_stops, load_lines_repository  # Imported load_lines_repository
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,6 +36,16 @@ class SiriGlobalDataUpdateCoordinator(DataUpdateCoordinator):
         self.entry = entry
         self.siri_endpoint = entry.data[CONF_SIRI_ENDPOINT]
         self.dataset_id = entry.data[CONF_DATASET_ID]
+        self.lines_repository_url = entry.data.get(CONF_LINES_REPOSITORY_URL)
+        
+        # Try to get lines_repository_url from options if not in data
+        if not self.lines_repository_url:
+            self.lines_repository_url = entry.options.get(CONF_LINES_REPOSITORY_URL)
+            
+        if self.lines_repository_url:
+            _LOGGER.info(f"Lines repository URL configured: {self.lines_repository_url}")
+        else:
+            _LOGGER.info("No lines repository URL configured")
 
         # Determine a single limit to pass to the API for all stops.
         # This could be the default, or a max of configured sensor limits if desired.
@@ -70,6 +81,7 @@ class SiriGlobalDataUpdateCoordinator(DataUpdateCoordinator):
                 self.dataset_id,
                 stop_ids_to_fetch,
                 limit_per_stop=self.api_limit_per_stop,
+                lines_repository_url=self.lines_repository_url,
             )
             if departures_by_stop is None:  # API error
                 raise UpdateFailed(
@@ -99,6 +111,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # For now, we allow setup, but sensors might not find their stops in config flow if this fails.
         # Or, better, prevent setup if stops cannot be loaded as config flow relies on it.
         return False  # Prevents setup if stops can't be loaded
+
+    # Précharger le référentiel des lignes si configuré
+    lines_repository_url = entry.data.get(CONF_LINES_REPOSITORY_URL)
+    # Si pas dans data, chercher dans options
+    if not lines_repository_url:
+        lines_repository_url = entry.options.get(CONF_LINES_REPOSITORY_URL)
+        
+    if lines_repository_url:
+        _LOGGER.info(f"Preloading lines repository from: {lines_repository_url}")
+        try:
+            await load_lines_repository(hass, lines_repository_url)
+        except Exception as e:
+            _LOGGER.warning(f"Error preloading lines repository: {e}")
+            # Ne pas bloquer l'installation de l'intégration si le référentiel ne peut pas être chargé
 
     # Create and store the global coordinator
     coordinator = SiriGlobalDataUpdateCoordinator(hass, entry)

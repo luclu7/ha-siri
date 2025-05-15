@@ -18,6 +18,7 @@ from .const import (
     CONF_STOP_NAME,
     CONF_SEARCH_TERM,
     CONF_MAX_DEPARTURES,
+    CONF_LINES_REPOSITORY_URL,
     DEFAULT_MAX_DEPARTURES,
 )
 from .utils import (
@@ -32,6 +33,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_NETEX_URL): str,
         vol.Required(CONF_SIRI_ENDPOINT): str,
         vol.Required(CONF_DATASET_ID): str,
+        vol.Optional(CONF_LINES_REPOSITORY_URL): str,
     }
 )
 
@@ -94,9 +96,76 @@ class SiriNextDeparturesOptionsFlowHandler(config_entries.OptionsFlow):
         # Initialize self.options here, where self.config_entry is available
         self.options = dict(self.config_entry.options)
 
+        if user_input is not None:
+            # Mise à jour du référentiel des lignes
+            if CONF_LINES_REPOSITORY_URL in user_input:
+                self.options[CONF_LINES_REPOSITORY_URL] = user_input[CONF_LINES_REPOSITORY_URL]
+                
+            # Retourner au menu principal ou sauvegarder directement
+            if user_input.get("next_step") == "menu":
+                return self.async_show_menu(
+                    step_id="init",
+                    menu_options=["search_stop", "remove_sensor", "update_lines_repository"],
+                )
+            else:
+                return self.async_create_entry(title="", data=self.options)
+
+        # Afficher le menu principal
         return self.async_show_menu(
             step_id="init",
-            menu_options=["search_stop", "remove_sensor"],
+            menu_options=["search_stop", "remove_sensor", "update_lines_repository"],
+        )
+
+    async def async_step_update_lines_repository(
+        self, user_input: Dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Étape pour mettre à jour l'URL du référentiel des lignes."""
+        errors: Dict[str, str] = {}
+        
+        if user_input is not None:
+            self.options[CONF_LINES_REPOSITORY_URL] = user_input.get(CONF_LINES_REPOSITORY_URL, "")
+            
+            # Sauvegarder les modifications et recharger l'intégration
+            try:
+                result = self.async_create_entry(title="", data=self.options)
+                _LOGGER.debug("Référentiel des lignes mis à jour.")
+                
+                # Recharger l'intégration pour appliquer les changements
+                if self.hass and self.config_entry:
+                    _LOGGER.info(
+                        "Reloading config entry %s to apply changes.",
+                        self.config_entry.entry_id,
+                    )
+                    self.hass.async_create_task(
+                        self.hass.config_entries.async_reload(
+                            self.config_entry.entry_id
+                        )
+                    )
+                return result
+            except Exception as e:
+                _LOGGER.error(
+                    "Error saving options: %s", e, exc_info=True
+                )
+                errors["base"] = "save_options_failed"
+        
+        # Préparer les valeurs par défaut
+        current_url = self.config_entry.options.get(
+            CONF_LINES_REPOSITORY_URL,
+            self.config_entry.data.get(CONF_LINES_REPOSITORY_URL, "")
+        )
+        
+        return self.async_show_form(
+            step_id="update_lines_repository",
+            data_schema=vol.Schema({
+                vol.Optional(
+                    CONF_LINES_REPOSITORY_URL, 
+                    default=current_url
+                ): str,
+            }),
+            errors=errors,
+            description_placeholders={
+                "current_url": current_url or "Non configuré"
+            },
         )
 
     async def _ensure_stops_loaded(self) -> bool:
