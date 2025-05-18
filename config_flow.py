@@ -53,11 +53,6 @@ class SiriNextDeparturesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             # For now, we'll assume the input is valid
             # You could also use self.hass.async_add_executor_job to run blocking validation
 
-            # Check if already configured (simple check, allows only one instance for now)
-            # A more robust check might involve checking unique IDs from the input
-            if self._async_current_entries():
-                return self.async_abort(reason="single_instance_allowed")
-
             # For a real integration, you'd fetch the NETEX file here to ensure it's valid
             # and perhaps to allow the user to select a "name" for this configuration instance.
             # For now, we'll use the dataset_id or a fixed name.
@@ -239,6 +234,11 @@ class SiriNextDeparturesOptionsFlowHandler(config_entries.OptionsFlow):
             + (
                 f" (Correspondances: {', '.join(stop.get('otherTransportModes',[]))})"
                 if stop.get("otherTransportModes")
+                else ""
+            )
+            + (
+                f" ({stop.get('cityName', '')})"
+                if stop.get("cityName")
                 else ""
             )
             for stop in self.all_stops_data

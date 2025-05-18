@@ -13,13 +13,11 @@
       }
     },
     "error": {
-      "single_instance_allowed": "Une seule instance de cette intégration est autorisée.",
       "cannot_connect": "Impossible de se connecter à l'API SIRI ou de télécharger le fichier NETEX. Vérifiez les informations.",
       "invalid_auth": "Authentification invalide avec l'API SIRI.",
       "unknown": "Erreur inconnue."
     },
     "abort": {
-        "single_instance_allowed": "Déjà configuré. Une seule configuration est possible."
     }
   },
   "options": {
@@ -41,7 +39,7 @@
       },
       "select_stop": {
         "title": "Ajouter un capteur - Sélectionner l'arrêt",
-        "description": "Sélectionnez l'arrêt désiré parmi les résultats pour \"{search_term}\".",
+        "description": "Sélectionnez l'arrêt désiré parmi les résultats pour \"{search_term}\". Les informations entre parenthèses incluent l'identifiant, le mode de transport, les correspondances disponibles et la ville.",
         "data": {
           "stop_id": "Arrêt"
         }

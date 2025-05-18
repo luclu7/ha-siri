@@ -34,6 +34,7 @@ class SiriGlobalDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize the coordinator."""
         self.hass = hass
         self.entry = entry
+        self.instance_id = entry.entry_id
         self.siri_endpoint = entry.data[CONF_SIRI_ENDPOINT]
         self.dataset_id = entry.data[CONF_DATASET_ID]
         self.lines_repository_url = entry.data.get(CONF_LINES_REPOSITORY_URL)
@@ -55,7 +56,8 @@ class SiriGlobalDataUpdateCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            name=f"{DOMAIN} ({entry.title})",
+            # Inclure l'ID de l'entrée dans le nom pour éviter les conflits entre instances
+            name=f"{DOMAIN}_{entry.entry_id}_{entry.title}",
             update_interval=timedelta(
                 seconds=entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL)
             ),
@@ -82,6 +84,7 @@ class SiriGlobalDataUpdateCoordinator(DataUpdateCoordinator):
                 stop_ids_to_fetch,
                 limit_per_stop=self.api_limit_per_stop,
                 lines_repository_url=self.lines_repository_url,
+                instance_id=self.instance_id,
             )
             if departures_by_stop is None:  # API error
                 raise UpdateFailed(
@@ -109,7 +112,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         # Optionally, raise ConfigEntryNotReady if stops are essential for any operation.
         # For now, we allow setup, but sensors might not find their stops in config flow if this fails.
-        # Or, better, prevent setup if stops cannot be loaded as config flow relies on it.
+        # Or, better, prevent setup if stops can't be loaded as config flow relies on it.
         return False  # Prevents setup if stops can't be loaded
 
     # Précharger le référentiel des lignes si configuré
@@ -119,17 +122,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         lines_repository_url = entry.options.get(CONF_LINES_REPOSITORY_URL)
         
     if lines_repository_url:
-        _LOGGER.info(f"Preloading lines repository from: {lines_repository_url}")
+        instance_id = entry.entry_id
+        _LOGGER.info(f"Preloading lines repository from: {lines_repository_url} for instance {instance_id}")
         try:
-            await load_lines_repository(hass, lines_repository_url)
+            await load_lines_repository(hass, lines_repository_url, instance_id)
         except Exception as e:
-            _LOGGER.warning(f"Error preloading lines repository: {e}")
+            _LOGGER.warning(f"Error preloading lines repository for instance {instance_id}: {e}")
             # Ne pas bloquer l'installation de l'intégration si le référentiel ne peut pas être chargé
 
     # Create and store the global coordinator
     coordinator = SiriGlobalDataUpdateCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()  # Initial refresh
 
+    # Nous utilisons entry_id comme clé pour stocker les données de cette instance
     hass.data[DOMAIN][entry.entry_id] = {
         "coordinator": coordinator,
         "stops": stops_data,  # Store loaded stops for config_flow to use
