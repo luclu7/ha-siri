@@ -735,6 +735,12 @@ async def get_departures_for_stops(
             
             all_departures[current_stop_id].append(departure_data)
 
+        # Trier les départs par expected_departure_time pour chaque arrêt
+        for stop_id in all_departures:
+            all_departures[stop_id].sort(
+                key=lambda x: x.get("expected_departure_time", "") if x.get("expected_departure_time") else ""
+            )
+
         _LOGGER.debug(
             f"Processed departures for {len(stop_ids)} stops. Result keys: {list(all_departures.keys())}"
         )
